@@ -1,4 +1,4 @@
-"""Train a feedforward network on digits or MNIST from the command line.
+"""Train a feedforward network on two moons, digits, or MNIST from the CLI.
 
 Usage:
     python scripts/train.py --dataset digits --optimizer adam --epochs 30
@@ -58,7 +58,7 @@ def build_model(
 def main() -> None:
     """Parse arguments, train, and report final test accuracy."""
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--dataset", choices=["digits", "mnist"], default="digits")
+    parser.add_argument("--dataset", choices=["moons", "digits", "mnist"], default="digits")
     parser.add_argument("--data-dir", default="data")
     parser.add_argument("--optimizer", choices=["sgd", "momentum", "adam"], default="adam")
     parser.add_argument(

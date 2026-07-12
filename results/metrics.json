@@ -1,0 +1,10 @@
+{
+  "dataset": "two_moons (synthetic, committed at data/two_moons.csv, seed 0)",
+  "architecture": "2-32-32-2, ReLU, He init, Adam lr 0.01",
+  "epochs": 200,
+  "seed": 0,
+  "gradient_check_max_rel_error": 5.059371398757425e-09,
+  "train_accuracy": 0.99,
+  "test_accuracy": 0.96,
+  "final_training_loss": 0.01966134350084895
+}

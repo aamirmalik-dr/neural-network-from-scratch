@@ -1,0 +1,16 @@
+{
+  "dataset": "digits",
+  "epochs": 40,
+  "seed": 0,
+  "architecture": "64-128-128-10",
+  "test_accuracy": {
+    "sgd": 0.975,
+    "momentum": 0.9805555555555555,
+    "adam": 0.9833333333333333
+  },
+  "learning_rates": {
+    "sgd": 0.1,
+    "momentum": 0.05,
+    "adam": 0.001
+  }
+}

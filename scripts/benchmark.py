@@ -10,6 +10,7 @@ Usage:
 from __future__ import annotations
 
 import argparse
+import json
 from pathlib import Path
 
 import matplotlib
@@ -58,7 +59,7 @@ def main() -> None:
     parser.add_argument("--batch-size", type=int, default=64)
     parser.add_argument("--hidden", type=int, default=128)
     parser.add_argument("--seed", type=int, default=0)
-    parser.add_argument("--out", default="figures/optimizer_comparison.png")
+    parser.add_argument("--out", default="results/optimizer_comparison.png")
     args = parser.parse_args()
 
     x_train, x_test, y_train, y_test = load_dataset(
@@ -85,27 +86,49 @@ def main() -> None:
         final_acc[name] = accuracy(model, x_test, y_test)
         print(f"{name:9s} lr={lr:<6} final test accuracy: {final_acc[name]:.4f}")
 
+    surface = "#fcfcfb"
+    grid_color = "#e1e0d9"
+    ink_muted = "#898781"
+    series_colors = ("#2a78d6", "#1baf7a", "#eda100")
+
     fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(11, 4.2))
-    for name, lr in configs:
+    fig.patch.set_facecolor(surface)
+    for (name, lr), color in zip(configs, series_colors, strict=True):
         label = f"{name} (lr={lr})"
         epochs_axis = range(1, args.epochs + 1)
-        ax1.plot(epochs_axis, histories[name].loss, label=label)
-        ax2.plot(epochs_axis, histories[name].val_accuracy, label=label)
-    ax1.set_xlabel("epoch")
-    ax1.set_ylabel("training loss")
+        ax1.plot(epochs_axis, histories[name].loss, label=label, color=color, linewidth=2)
+        ax2.plot(epochs_axis, histories[name].val_accuracy, label=label, color=color, linewidth=2)
+    for ax in (ax1, ax2):
+        ax.set_facecolor(surface)
+        ax.grid(True, color=grid_color, linewidth=0.6)
+        ax.tick_params(colors=ink_muted)
+        ax.set_xlabel("epoch", color=ink_muted)
+        for spine in ax.spines.values():
+            spine.set_color(grid_color)
+        ax.legend()
+    ax1.set_ylabel("training loss", color=ink_muted)
     ax1.set_yscale("log")
     ax1.set_title(f"Convergence on {args.dataset}")
-    ax1.legend()
-    ax2.set_xlabel("epoch")
-    ax2.set_ylabel("test accuracy")
+    ax2.set_ylabel("test accuracy", color=ink_muted)
     ax2.set_title("Held-out accuracy")
-    ax2.legend()
     fig.tight_layout()
 
     out = Path(args.out)
     out.parent.mkdir(parents=True, exist_ok=True)
-    fig.savefig(out, dpi=150)
+    fig.savefig(out, dpi=150, facecolor=surface)
     print(f"figure saved to {out}")
+
+    metrics = {
+        "dataset": args.dataset,
+        "epochs": args.epochs,
+        "seed": args.seed,
+        "architecture": f"{x_train.shape[1]}-{args.hidden}-{args.hidden}-{int(y_train.max()) + 1}",
+        "test_accuracy": {name: final_acc[name] for name, _ in configs},
+        "learning_rates": dict(configs),
+    }
+    metrics_path = out.parent / "optimizer_metrics.json"
+    metrics_path.write_text(json.dumps(metrics, indent=2) + "\n", encoding="utf-8")
+    print(f"metrics saved to {metrics_path}")
 
     print()
     print(f"{'optimizer':<12}{'lr':<8}{'test accuracy':<14}")
