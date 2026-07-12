@@ -12,12 +12,14 @@ dist/
 .pytest_cache/
 .ruff_cache/
 
-# Data and results
+# Data and results: large local caches stay ignored, the small committed
+# sample, the figures, the metrics, and the trained toy weights are tracked.
 data/*
 !data/README.md
-results/
+!data/two_moons.csv
 *.npy
 *.npz
+!results/two_moons_model.npz
 
 # Notebook checkpoints
 .ipynb_checkpoints/

@@ -1,5 +1,6 @@
 """nnscratch: a feedforward neural network built from first principles with NumPy."""
 
+from nnscratch.data import load_two_moons, make_two_moons
 from nnscratch.gradient_check import gradient_check
 from nnscratch.initializers import he_init, xavier_init
 from nnscratch.layers import Dense, Dropout, ReLU, Sigmoid
@@ -23,6 +24,8 @@ __all__ = [
     "get_optimizer",
     "gradient_check",
     "he_init",
+    "load_two_moons",
+    "make_two_moons",
     "train",
     "xavier_init",
 ]

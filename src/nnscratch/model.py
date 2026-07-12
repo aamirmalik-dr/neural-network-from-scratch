@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+from pathlib import Path
+
 import numpy as np
 
 from nnscratch.layers import Dense, Layer
@@ -84,6 +86,45 @@ class Sequential:
         """
         logits = self.forward(x, training=training)
         return loss_fn.forward(logits, y) + self.l2_penalty()
+
+    def save_weights(self, path: str | Path) -> None:
+        """Save all trainable parameters to a compressed ``.npz`` file.
+
+        Only the raw arrays are stored, in ``parameters()`` order. Loading
+        requires rebuilding the same architecture first.
+
+        Args:
+            path: Destination file. Parent directories are created if needed.
+        """
+        path = Path(path)
+        path.parent.mkdir(parents=True, exist_ok=True)
+        arrays = {f"param_{i}": p for i, p in enumerate(self.parameters())}
+        np.savez_compressed(path, **arrays)
+
+    def load_weights(self, path: str | Path) -> None:
+        """Load parameters saved by :meth:`save_weights` into this model.
+
+        Args:
+            path: Source ``.npz`` file.
+
+        Raises:
+            ValueError: If the file's arrays do not match this architecture.
+        """
+        with np.load(Path(path)) as arrays:
+            params = self.parameters()
+            if len(arrays.files) != len(params):
+                raise ValueError(
+                    f"Checkpoint holds {len(arrays.files)} arrays but the model "
+                    f"has {len(params)} parameter arrays."
+                )
+            for i, p in enumerate(params):
+                saved = arrays[f"param_{i}"]
+                if saved.shape != p.shape:
+                    raise ValueError(
+                        f"Shape mismatch for parameter {i}: "
+                        f"checkpoint {saved.shape} vs model {p.shape}."
+                    )
+                p[...] = saved
 
     def predict(self, x: np.ndarray) -> np.ndarray:
         """Predicted class labels for a batch.
