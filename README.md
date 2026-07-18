@@ -1,7 +1,5 @@
 # neural-network-from-scratch
 
-*Origin: Originally developed for the Programming for AI course at KAIST (Fall 2020); refactored and open-sourced in July 2026.*
-
 I wanted to know, concretely, everything a deep learning framework does between
 `loss.backward()` and the next parameter update. So I built it: a feedforward
 network in pure NumPy where every gradient is derived by hand, implemented
@@ -199,3 +197,7 @@ Aamir Malik
 ## License
 
 MIT, see [LICENSE](LICENSE).
+
+---
+
+*Refactored and engineered into this tested, reproducible project in July 2026, from work originally done for the Programming for AI course at KAIST (Fall 2020).*
