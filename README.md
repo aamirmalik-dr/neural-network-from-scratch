@@ -1,4 +1,4 @@
-# A neural network from scratch, derived and verified
+# neural-network-from-scratch
 
 *Origin: Originally developed for the Programming for AI course at KAIST (Fall 2020); refactored and open-sourced in July 2026.*
 
